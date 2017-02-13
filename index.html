@@ -2,11 +2,11 @@
 <html>
 	<head>
 <style>
-#arr {
+.sequence {
 	font-family: monospace;
 }
 
-#arr .bold {
+.sequence .current {
 	font-weight: bold;
 	color: red;
 }
@@ -14,14 +14,15 @@
 	</head>
 	<body>
 		<div>
-			<p>Beats per minute: <input type="number" id="b" value="20"></p>
-			<p>Maximum BPM: <input type="number" value="300" id="maxb"></p>
-			<p>Minimum BPM: <input type="number" value="20" id="minb"></p>
-			<p>Beats per measure: <input type="number" value="4" id="n"></p>
-			<p>Subdivisions per beat: <input type="number" value="3" id="s"></p>
-			<p>Measures per round: <input type="text" value="2" id="m"></p>
-			<p><button id="go">Go</button></p>
-			<p><code id="arr"></code></p>
+			<p>Beats per minute: <input type="number" id="input_b" value="40"></p>
+			<p>Maximum BPM: <input type="number" value="300" id="input_maxb"></p>
+			<p>Minimum BPM: <input type="number" value="20" id="input_minb"></p>
+			<p>Beats per measure: <input type="number" value="4" id="input_n"></p>
+			<p>Subdivisions per beat: <input type="number" value="3" id="input_s"></p>
+			<p>Measures per round: <input type="text" value="2" id="input_m"></p>
+			<p><button id="button_go">Go</button></p>
+			<p class="details" id="p_details"></p>
+			<p class="sequence" id="p_sequence"></p>
 		</div>
 		<script src="main.js"></script>
 	</body>

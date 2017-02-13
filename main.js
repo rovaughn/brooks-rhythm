@@ -1,70 +1,95 @@
 
 var click = new Audio('click.wav');
 
-go.onclick = function() {
-	go.disabled = true;
-	var b = +document.getElementById('b').value;
-	var maxb = +document.getElementById('maxb').value;
-	var minb = +document.getElementById('minb').value;
-	var n = +document.getElementById('n').value;
-	var s = +document.getElementById('s').value;
-	var m = +document.getElementById('m').value;
+function morph(params) {
+	var minc = (params.b*params.s)/params.maxb;
+	var maxc = (params.b*params.s)/params.minb;
 
-	var arr = [];
+	if (maxc < minc) {
+		throw new Error('No possible c');
+	}
 
-	for (var i = 0; i < s*n*m; i++) {
-		if (i%(n*s) === 0) {
-			arr.push(1);
-		} else if (i%s === 0) {
-			arr.push(1/2);
+	console.log('generating c in range', minc, maxc);
+
+	var c = minc + Math.random()*(maxc - minc);
+
+	return {
+		b: params.b*params.s/c,
+		maxb: params.maxb,
+		minb: params.minb,
+		n: params.n,
+		s: Math.round(params.s/c),
+		m: params.m,
+	};
+}
+
+function play_sequence(params, done) {
+	var nsamples = params.s*params.n*params.m;
+
+	function sample(i) {
+		if (i%(params.n*params.s) === 0) {
+			return 1/1;
+		} else if (i%params.s === 0) {
+			return 1/2;
 		} else {
-			arr.push(1/4);
+			return 1/4;
 		}
 	}
 
-	var arr_elem = document.getElementById('arr');
-	var spans = [];
+	p_details.innerText = 'BPM = ' + params.b + ', subdivisions/beat = ' + params.s;
 
-	for (var i = 0; i < arr.length; i++) {
-		var elem = arr_elem.appendChild(document.createElement('span'));
-		spans.push(elem);
+	var spans = [];
+	for (var i = 0; i < nsamples; i++) {
+		var span = p_sequence.appendChild(document.createElement('span'));
+		spans.push(span);
 		
-		if (arr[i] >= 1) {
-			elem.innerText = '|';
-		} else if (arr[i] >= 1/2) {
-			elem.innerText = '-';
-		} else if (arr[i] >= 1/4) {
-			elem.innerText = ',';
+		if (sample(i) >= 1) {
+			span.innerText = '|';
+		} else if (sample(i) >= 1/2) {
+			span.innerText = '-';
+		} else if (sample(i) >= 1/4) {
+			span.innerText = ',';
 		} else {
-			elem.innerText = ' ';
+			span.innerText = ' ';
 		}
 	}
 
 	var i = 0;
-	var interval = setInterval(function() {
-		if (i >= arr.length) {
-			arr_elem.innerHTML = '';
-			go.disabled = false;
+	function do_click() {
+		if (i >= nsamples) {
+			p_sequence.innerHTML = '';
 			clearInterval(interval);
+			if (done) { done(); }
 			return;
-		} else if (i > 0) {
-			spans[i-1].classList.remove('bold');
-		}
-		spans[i].classList.add('bold');
-		click.volume = arr[i];
-		click.play();
-		if (i%(n*s) === 0) {
-			click.volume = 1.00;
-			click.play();
-		} else if (i%s === 0) {
-			click.volume = 0.50;
-			click.play();
-		} else {
-			click.volume = 0.25;
-			click.play();
 		}
 
+		if (i > 0) {
+			spans[i-1].classList.remove('current');
+		}
+		spans[i].classList.add('current');
+		click.volume = sample(i);
+		click.play();
 		i++;
-	}, 400);
+	}
+
+	do_click();
+	var interval = setInterval(do_click, 60000/(params.b*params.s));
+}
+
+button_go.onclick = function() {
+	button_go.disabled = true;
+
+	var params = {
+		b: +input_b.value,
+		maxb: +input_maxb.value,
+		minb: +input_minb.value,
+		n: +input_n.value,
+		s: +input_s.value,
+		m: +input_m.value,
+	};
+
+	play_sequence(params, function() {
+		play_sequence(morph(params));
+	});
 };
 
