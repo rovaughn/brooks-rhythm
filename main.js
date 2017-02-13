@@ -1,5 +1,18 @@
 
-var click = new Audio('click.wav');
+var click_audios = [];
+
+for (var i = 0; i < 10; i++) {
+	click_audios.push(new Audio('click.wav'));
+}
+
+var next_click_audio = 0;
+
+function play_click(volume) {
+	var audio = click_audios[next_click_audio];
+	next_click_audio = (next_click_audio + 1) % click_audios.length;
+	audio.volume = volume;
+	audio.play();
+}
 
 function morph(params) {
 	var minc = (params.b*params.s)/params.maxb;
@@ -54,6 +67,8 @@ function play_sequence(params, done) {
 		}
 	}
 
+	p_sequence.appendChild(document.createElement('br'));
+
 	var i = 0;
 	function do_click() {
 		if (i > 0) {
@@ -65,8 +80,7 @@ function play_sequence(params, done) {
 			if (done) { done(); }
 		} else {
 			spans[i].classList.add('current');
-			click.volume = sample(i);
-			click.play();
+			play_click(sample(i));
 			i++;
 		}
 	}
@@ -87,10 +101,17 @@ button_go.onclick = function() {
 		m: +input_m.value,
 	};
 
-	play_sequence(params, function() {
-		play_sequence(morph(params), function() {
+	var nrounds = +input_rounds.value;
+	var ncompleted = 0;
+	function do_rounds() {
+		if (ncompleted >= nrounds) {
 			button_go.disabled = false;
-		});
-	});
+		} else {
+			ncompleted++;
+			play_sequence(params, do_rounds);
+			params = morph(params);
+		}
+	}
+	do_rounds();
 };
 
