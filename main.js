@@ -56,20 +56,19 @@ function play_sequence(params, done) {
 
 	var i = 0;
 	function do_click() {
-		if (i >= nsamples) {
-			p_sequence.innerHTML = '';
-			clearInterval(interval);
-			if (done) { done(); }
-			return;
-		}
-
 		if (i > 0) {
 			spans[i-1].classList.remove('current');
 		}
-		spans[i].classList.add('current');
-		click.volume = sample(i);
-		click.play();
-		i++;
+
+		if (i >= nsamples) {
+			clearInterval(interval);
+			if (done) { done(); }
+		} else {
+			spans[i].classList.add('current');
+			click.volume = sample(i);
+			click.play();
+			i++;
+		}
 	}
 
 	do_click();
@@ -89,7 +88,9 @@ button_go.onclick = function() {
 	};
 
 	play_sequence(params, function() {
-		play_sequence(morph(params));
+		play_sequence(morph(params), function() {
+			button_go.disabled = false;
+		});
 	});
 };
 
