@@ -14,15 +14,48 @@
 	</head>
 	<body>
 		<div>
-			<p>Beats per minute: <input type="number" id="input_b" value="40"></p>
-			<p>Maximum BPM: <input type="number" value="300" id="input_maxb"></p>
-			<p>Minimum BPM: <input type="number" value="20" id="input_minb"></p>
-			<p>Beats per measure: <input type="number" value="4" id="input_n"></p>
-			<p>Subdivisions per beat: <input type="number" value="6" id="input_s"></p>
-			<p>Measures per round: <input type="number" value="2" id="input_m"></p>
-			<p>Number of rounds: <input type="number" value="3" id="input_rounds"></p>
+			<table>
+				<thead>
+					<th>Value</th>
+					<th>Minimum</th>
+					<th>Maximum</th>
+					<th>Chosen</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Beats per minute</td>
+						<td><input type="number" value="20" id="input_b_min"></td>
+						<td><input type="number" value="300" id="input_b_max"></td>
+						<td><input type="number" value"" disabled id="input_b_chosen"></td>
+					</tr>
+					<tr>
+						<td>Beats per measure</td>
+						<td><input type="number" value="1" id="input_n_min"></td>
+						<td><input type="number" value="12" id="input_n_max"></td>
+						<td><input type="number" value"" disabled id="input_n_chosen"></td>
+					</tr>
+					<tr>
+						<td>Subdivisions per beat</td>
+						<td><input type="number" value="1" id="input_s_min"></td>
+						<td><input type="number" value="12" id="input_s_max"></td>
+						<td><input type="number" value"" disabled id="input_s_chosen"></td>
+					</tr>
+					<tr>
+						<td>Measures per round</td>
+						<td><input type="number" value="1" id="input_m_min"></td>
+						<td><input type="number" value="1" id="input_m_max"></td>
+						<td><input type="number" value"" disabled id="input_m_chosen"></td>
+					</tr>
+					<tr>
+						<td>Subdivisions to combine</td>
+						<td><input type="number" value="1" id="input_c_min"></td>
+						<td><input type="number" value="12" id="input_c_max"></td>
+						<td><input type="number" value"" disabled id="input_c_chosen"></td>
+					</tr>
+				</tbody>
+			</table>
+			<p>Rounds to play: <input type="number" value="10" id="input_rounds"></p>
 			<p><button id="button_go">Go</button></p>
-			<p class="details" id="p_details"></p>
 			<p class="sequence" id="p_sequence"></p>
 		</div>
 		<script src="main.js"></script>

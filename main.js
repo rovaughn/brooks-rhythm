@@ -1,7 +1,7 @@
 
 var click_audios = [];
 
-for (var i = 0; i < 10; i++) {
+for (var i = 0; i < 30; i++) {
 	click_audios.push(new Audio('click.wav'));
 }
 
@@ -14,29 +14,52 @@ function play_click(volume) {
 	audio.play();
 }
 
-function morph(params) {
-	var minc = (params.b*params.s)/params.maxb;
-	var maxc = (params.b*params.s)/params.minb;
-
-	if (maxc < minc) {
-		throw new Error('No possible c');
+function rand(min, max) {
+	if (max < min) {
+		throw new Error('max < min');
 	}
 
-	console.log('generating c in range', minc, maxc);
+	var x = Math.round(min + Math.random()*(max - min));
 
-	var c = minc + Math.random()*(maxc - minc);
+	if (x < min) { x = min; }
+	if (x > max) { x = max; }
 
-	return {
-		b: params.b*params.s/c,
-		maxb: params.maxb,
-		minb: params.minb,
-		n: params.n,
-		s: Math.round(params.s/c),
-		m: params.m,
-	};
+	return x;
+}
+
+function int_clip(x, min, max) {
+	x = Math.round(x);
+	if (x < min) { x = min; }
+	if (x > max) { x = max; }
+	return x;
+}
+
+function morph(params) {
+	for (var i = 0; i < 1000; i++) {
+		var c = rand(+input_c_min.value, +input_c_max.value);
+
+		var new_params = {
+			b: Math.round(params.s*params.b/c),
+			n: params.n,
+			s: Math.round(params.s/c),
+			m: params.m,
+		};
+
+		if (+input_b_min.value <= new_params.b && new_params.b <= +input_b_max.value && +input_s_min.value <= new_params.s && new_params.s <= +input_s_max.value) {
+			input_c_chosen.value = c;
+			return new_params;
+		}
+	}
+
+	throw new Error("Max iters exceeded");
 }
 
 function play_sequence(params, done) {
+	input_b_chosen.value = params.b;
+	input_n_chosen.value = params.n;
+	input_s_chosen.value = params.s;
+	input_m_chosen.value = params.m;
+
 	var nsamples = params.s*params.n*params.m;
 
 	function sample(i) {
@@ -49,8 +72,6 @@ function play_sequence(params, done) {
 		}
 	}
 
-	p_details.innerText = 'BPM = ' + params.b + ', subdivisions/beat = ' + params.s;
-
 	var spans = [];
 	for (var i = 0; i < nsamples; i++) {
 		var span = p_sequence.appendChild(document.createElement('span'));
@@ -61,7 +82,7 @@ function play_sequence(params, done) {
 		} else if (sample(i) >= 1/2) {
 			span.innerText = '-';
 		} else if (sample(i) >= 1/4) {
-			span.innerText = ',';
+			span.innerText = '.';
 		} else {
 			span.innerText = ' ';
 		}
@@ -93,12 +114,10 @@ button_go.onclick = function() {
 	button_go.disabled = true;
 
 	var params = {
-		b: +input_b.value,
-		maxb: +input_maxb.value,
-		minb: +input_minb.value,
-		n: +input_n.value,
-		s: +input_s.value,
-		m: +input_m.value,
+		b: rand(+input_b_min.value, +input_b_max.value),
+		n: rand(+input_n_min.value, +input_n_max.value),
+		s: rand(+input_s_min.value, +input_s_max.value),
+		m: rand(+input_m_min.value, +input_m_max.value),
 	};
 
 	var nrounds = +input_rounds.value;
