@@ -16,7 +16,7 @@ function play_click(volume) {
 
 function rand(min, max) {
 	if (max < min) {
-		throw new Error('max < min');
+		throw new Error("max < min");
 	}
 
 	var x = Math.round(min + Math.random()*(max - min));
@@ -39,13 +39,13 @@ function morph(params) {
 		var c = rand(+input_c_min.value, +input_c_max.value);
 
 		var new_params = {
-			b: Math.round(params.s*params.b/c),
-			n: params.n,
-			s: Math.round(params.s/c),
-			m: params.m,
+			b: Math.round(params.b*params.s/c),
+			n: rand(+input_n_min.value, +input_n_max.value),
+			s: rand(+input_s_min.value, +input_s_max.value),
+			m: rand(+input_m_min.value, +input_m_max.value),
 		};
 
-		if (+input_b_min.value <= new_params.b && new_params.b <= +input_b_max.value && +input_s_min.value <= new_params.s && new_params.s <= +input_s_max.value) {
+		if (+input_b_min.value <= new_params.b && new_params.b <= +input_b_max.value) {
 			input_c_chosen.value = c;
 			return new_params;
 		}
@@ -68,7 +68,7 @@ function play_sequence(params, done) {
 		} else if (i%params.s === 0) {
 			return 1/2;
 		} else {
-			return 1/4;
+			return 1/8;
 		}
 	}
 
@@ -81,7 +81,7 @@ function play_sequence(params, done) {
 			span.innerText = '|';
 		} else if (sample(i) >= 1/2) {
 			span.innerText = '-';
-		} else if (sample(i) >= 1/4) {
+		} else if (sample(i) >= 1/8) {
 			span.innerText = '.';
 		} else {
 			span.innerText = ' ';
