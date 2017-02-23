@@ -6,7 +6,7 @@
 	font-family: monospace;
 }
 
-.sequence .current {
+.current {
 	font-weight: bold;
 	color: red;
 }
@@ -24,39 +24,39 @@
 			<tbody>
 				<tr>
 					<td>Beats per minute</td>
-					<td><input type="number" value="40" id="input_b_min"></td>
-					<td><input type="number" value="160" id="input_b_max"></td>
-					<td><input type="number" value"" disabled id="input_b_chosen"></td>
+					<td><input type="number" value="40"  id="input_beats_per_minute_min"></td>
+					<td><input type="number" value="160" id="input_beats_per_minute_max"></td>
+					<td><input type="number" value=""    id="input_beats_per_minute_chosen" disabled></td>
 				</tr>
 				<tr>
 					<td>Beats per measure</td>
-					<td><input type="number" value="1" id="input_n_min"></td>
-					<td><input type="number" value="7" id="input_n_max"></td>
-					<td><input type="number" value"" disabled id="input_n_chosen"></td>
+					<td><input type="number" value="1" id="input_beats_per_measure_min"></td>
+					<td><input type="number" value="7" id="input_beats_per_measure_max"></td>
+					<td><input type="number" value=""  id="input_beats_per_measure_chosen" disabled></td>
 				</tr>
 				<tr>
 					<td>Subdivisions per beat</td>
-					<td><input type="number" value="1" id="input_s_min"></td>
-					<td><input type="number" value="9" id="input_s_max"></td>
-					<td><input type="number" value"" disabled id="input_s_chosen"></td>
+					<td><input type="number" value="1" id="input_subdivisions_per_beat_min"></td>
+					<td><input type="number" value="9" id="input_subdivisions_per_beat_max"></td>
+					<td><input type="number" value=""  id="input_subdivisions_per_beat_chosen" disabled></td>
 				</tr>
 				<tr>
 					<td>Measures per round</td>
-					<td><input type="number" value="1" id="input_m_min"></td>
-					<td><input type="number" value="8" id="input_m_max"></td>
-					<td><input type="number" value"" disabled id="input_m_chosen"></td>
+					<td><input type="number" value="1" id="input_measures_per_round_min"></td>
+					<td><input type="number" value="8" id="input_measures_per_round_max"></td>
+					<td><input type="number" value=""  id="input_measures_per_round_chosen" disabled></td>
 				</tr>
 				<tr>
 					<td>Subdivisions to combine</td>
-					<td><input type="number" value="1" id="input_c_min"></td>
-					<td><input type="number" value="9" id="input_c_max"></td>
-					<td><input type="number" value"" disabled id="input_c_chosen"></td>
+					<td><input type="number" value="1" id="input_subdivisions_to_combine_min"></td>
+					<td><input type="number" value="9" id="input_subdivisions_to_combine_max"></td>
+					<td><input type="number" value=""  id="input_subdivisions_to_combine_chosen" disabled></td>
 				</tr>
 			</tbody>
 		</table>
-		<p>Rounds to play: <input type="number" value="5" id="input_rounds"></p>
+		<p>Rounds to play: <input type="number" value="5" id="input_rounds_to_play"></p>
 		<p><button id="button_go">Go</button></p>
-		<p class="sequence" id="p_sequence"></p>
+		<div id="div_notes"></p>
 		<script src="main.js"></script>
 	</body>
 </html>
