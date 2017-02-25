@@ -129,7 +129,7 @@ function display_rounds(rounds) {
 					time: time,
 					action: function() {
 						audio.play();
-						span_to_clear.classList.remove('current');
+						span_to_clear && span_to_clear.classList.remove('current');
 						span.classList.add('current');
 					},
 				});
