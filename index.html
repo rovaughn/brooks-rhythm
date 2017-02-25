@@ -7,8 +7,8 @@
 }
 
 .current {
-	font-weight: bold;
-	color: red;
+	background-color: red;
+	color: white;
 }
 </style>
 	</head>
@@ -19,44 +19,41 @@
 				<th>Value</th>
 				<th>Minimum</th>
 				<th>Maximum</th>
-				<th>Chosen</th>
 			</thead>
 			<tbody>
 				<tr>
 					<td>Beats per minute</td>
 					<td><input type="number" value="40"  id="input_beats_per_minute_min"></td>
 					<td><input type="number" value="160" id="input_beats_per_minute_max"></td>
-					<td><input type="number" value=""    id="input_beats_per_minute_chosen" disabled></td>
 				</tr>
 				<tr>
 					<td>Beats per measure</td>
 					<td><input type="number" value="1" id="input_beats_per_measure_min"></td>
 					<td><input type="number" value="7" id="input_beats_per_measure_max"></td>
-					<td><input type="number" value=""  id="input_beats_per_measure_chosen" disabled></td>
 				</tr>
 				<tr>
 					<td>Subdivisions per beat</td>
 					<td><input type="number" value="1" id="input_subdivisions_per_beat_min"></td>
 					<td><input type="number" value="9" id="input_subdivisions_per_beat_max"></td>
-					<td><input type="number" value=""  id="input_subdivisions_per_beat_chosen" disabled></td>
 				</tr>
 				<tr>
 					<td>Measures per round</td>
 					<td><input type="number" value="1" id="input_measures_per_round_min"></td>
 					<td><input type="number" value="8" id="input_measures_per_round_max"></td>
-					<td><input type="number" value=""  id="input_measures_per_round_chosen" disabled></td>
 				</tr>
 				<tr>
 					<td>Subdivisions to combine</td>
 					<td><input type="number" value="1" id="input_subdivisions_to_combine_min"></td>
 					<td><input type="number" value="9" id="input_subdivisions_to_combine_max"></td>
-					<td><input type="number" value=""  id="input_subdivisions_to_combine_chosen" disabled></td>
+				</tr>
+				<tr>
+					<td>Rounds to play</td>
+					<td><input type="number" value="5" id="input_rounds_to_play"></td>
 				</tr>
 			</tbody>
 		</table>
-		<p>Rounds to play: <input type="number" value="5" id="input_rounds_to_play"></p>
-		<p><button id="button_go">Go</button></p>
-		<div id="div_notes"></p>
+		<p><button id="button_generate">Generate</button> <button id="button_play">Play</button></p>
+		<pre id="div_notes"></pre>
 		<script src="main.js"></script>
 	</body>
 </html>

@@ -14,6 +14,20 @@ function rand_int(min, max) {
 	return x;
 }
 
+function gcd(a, b) {
+	if (b === 0) {
+		return a;
+	} else {
+		return gcd(b, a % b);
+	}
+}
+
+function fraction(a, b) {
+	var cd = gcd(a, b);
+
+	return (a/cd) + '/' + (b/cd);
+}
+
 function create_rounds() {
 	var nrounds = +input_rounds_to_play.value;
 
@@ -29,16 +43,13 @@ function create_rounds() {
 	var maxc = +input_subdivisions_to_combine_max.value;
 
 	var b = rand_int(minb, maxb);
+	var ratio = null;
 
 	var rounds = [];
 	for (var i = 0; i < nrounds; i++) {
 		var n = rand_int(minn, maxn);
 		var s = rand_int(mins, maxs);
 		var m = rand_int(minm, maxm);
-		var c = rand_int(
-			Math.max(b*s/maxb, minc),
-			Math.min(b*s/minb, maxc)
-		);
 
 		var sequence = '';
 		for (var j = 0; j < s*n*m; j++) {
@@ -56,77 +67,116 @@ function create_rounds() {
 			beats_per_measure: n,
 			subdivisions_per_beat: s,
 			measures_per_round: m,
-			subdivisions_to_combine: c,
+			beat_ratio: ratio,
 			sequence: sequence,
 		});
 
+		var c = rand_int(
+			Math.max(b*s/maxb, minc),
+			Math.min(b*s/minb, maxc)
+		);
 		b = b*s/c;
+		ratio = fraction(s, c);
 	}
 
 	return rounds;
 }
 
-var volumes = {'|': 1.00, '-': 0.50, '.': 0.10};
+function ljust(str, width) {
+	return str + Array(width - str.length + 1).join(" ");
+}
 
-function play_rounds(rounds, done) {
+var volumes = {"|": 1.00, "-": 0.50, ".": 0.10};
+
+function display_rounds(rounds) {
 	var fragment = document.createDocumentFragment();
 	var time = 0;
 
 	var notes = [];
 
-	var scheduled = [];
+	var schedule = [];
+
+	var last_span = null;
 
 	for (var i = 0; i < rounds.length; i++) {
 		var p = fragment.appendChild(document.createElement('p'));
 
-		(function(i) {
-			scheduled.push({
-				time: time - 50,
-				action: function() {
-					input_beats_per_minute_chosen.value = rounds[i].beats_per_minute.toFixed(0);
-					input_beats_per_measure_chosen.value = rounds[i].beats_per_measure;
-					input_subdivisions_per_beat_chosen.value = rounds[i].subdivisions_per_beat;
-					input_measures_per_round_chosen.value = rounds[i].measures_per_round;
-					input_subdivisions_to_combine_chosen.value = rounds[i].subdivisions_to_combine;
-				},
-			});
-		})(i);
+		if (rounds[i].beat_ratio) {
+			p.appendChild(document.createTextNode("new beat = " + rounds[i].beat_ratio + " old beat = " + rounds[i].beats_per_minute.toFixed(0) + " bpm\n"));
+		} else {
+			p.appendChild(document.createTextNode("beat = " + rounds[i].beats_per_minute.toFixed(0) + " bpm\n"));
+		}
+
+		p.appendChild(document.createTextNode(" "));
+
+		for (var j = 0; j < rounds[i].beats_per_measure * rounds[i].measures_per_round; j++) {
+			p.appendChild(document.createTextNode(ljust(''+rounds[i].subdivisions_per_beat, rounds[i].subdivisions_per_beat)));
+		}
+
+		p.appendChild(document.createTextNode("\n"));
+		p.appendChild(document.createTextNode(rounds[i].beats_per_measure));
 
 		for (var j = 0; j < rounds[i].sequence.length; j++) {
-			(function(i, j) {
+			(function(i, j, span_to_clear) {
 				var span = p.appendChild(document.createElement('span'));
+				last_span = span;
 				span.innerText = rounds[i].sequence[j];
 
 				var audio = new Audio('click.wav');
 				audio.volume = volumes[rounds[i].sequence[j]];
 
-				scheduled.push({
+				schedule.push({
 					time: time,
 					action: function() {
 						audio.play();
+						span_to_clear.classList.remove('current');
 						span.classList.add('current');
 					},
 				});
-			})(i, j);
+			})(i, j, last_span);
 
 			time += 60000 / (rounds[i].beats_per_minute * rounds[i].subdivisions_per_beat);
 		}
 	}
 
+	schedule.push({
+		time: time,
+		action: function() {
+			last_span.classList.remove('current');
+		},
+	});
+
+	div_notes.innerHTML = '';
 	div_notes.appendChild(fragment);
 
-	var start = 500 + +new Date();
-
-	for (var i = 0; i < scheduled.length; i++) {
-		setTimeout(scheduled[i].action, start + scheduled[i].time - +new Date());
-	}
+	return schedule;
 }
 
-button_go.onclick = function() {
-	button_go.disabled = true;
+function play_rounds(schedule, done) {
+	var start = 500 + +new Date();
 
-	play_rounds(create_rounds(), function() {
-		button_go.disabled = false;
+	for (var i = 0; i < schedule.length; i++) {
+		setTimeout(schedule[i].action, start + schedule[i].time - +new Date());
+	}
+
+	setTimeout(done, start + schedule[schedule.length-1].time - +new Date());
+}
+
+var current_rounds = null;
+var current_schedule = null;
+
+button_generate.onclick = function() {
+	current_rounds = create_rounds();
+	current_schedule = display_rounds(current_rounds);
+
+	button_play.disabled = false;
+};
+
+button_play.onclick = function() {
+	button_generate.disabled = button_play.disabled = true;
+
+	play_rounds(current_schedule, function() {
+		button_generate.disabled = button_play.disabled = false;
 	});
 };
 
