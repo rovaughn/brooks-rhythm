@@ -48,11 +48,11 @@ function create_rounds() {
 
 	var b = rand_int(minb, maxb);
 	var s = rand_int(mins, maxs);
-	var n = rand_int(minn, maxn);
 
 	var rounds = [];
 	for (var i = 0; i < nrounds; i++) {
 		var m = rand_int(minm, maxm);
+		var n = rand_int(minn, maxn);
 
 		var sequence = '';
 		for (var j = 0; j < s*n*m; j++) {
