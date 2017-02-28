@@ -14,14 +14,6 @@ function rand_int(min, max) {
 	return x;
 }
 
-function gcd(a, b) {
-	if (b === 0) {
-		return a;
-	} else {
-		return gcd(b, a % b);
-	}
-}
-
 function fraction(a, b) {
 	var x = a / b;
 	var best_error = Infinity;
