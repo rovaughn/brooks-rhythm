@@ -23,9 +23,21 @@ function gcd(a, b) {
 }
 
 function fraction(a, b) {
-	var cd = gcd(a, b);
+	var x = a / b;
+	var best_error = Infinity;
+	var best_ratio = null;
+ 
+	for (var denominator = 1; denominator <= 100; denominator++) {
+		var numerator = Math.round(x * denominator);
+		var error = Math.abs(numerator / denominator - x);
 
-	return (a/cd) + '/' + (b/cd);
+		if (error < best_error) {
+			best_error = error;
+			best_ratio = numerator + '/' + denominator;
+		}
+	}
+
+	return best_ratio;
 }
 
 function create_rounds() {
