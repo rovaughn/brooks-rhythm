@@ -165,7 +165,7 @@ function display_rounds(rounds) {
 }
 
 function play_rounds(schedule, done) {
-	var start = 500 + +new Date();
+	var start = 16 + +new Date();
 
 	for (var i = 0; i < schedule.length; i++) {
 		setTimeout(schedule[i].action, start + schedule[i].time - +new Date());
