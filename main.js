@@ -47,12 +47,11 @@ function create_rounds() {
 	var maxc = +input_subdivisions_to_combine_max.value;
 
 	var b = rand_int(minb, maxb);
-	var ratio = null;
+	var s = rand_int(mins, maxs);
+	var n = rand_int(minn, maxn);
 
 	var rounds = [];
 	for (var i = 0; i < nrounds; i++) {
-		var n = rand_int(minn, maxn);
-		var s = rand_int(mins, maxs);
 		var m = rand_int(minm, maxm);
 
 		var sequence = '';
@@ -71,16 +70,21 @@ function create_rounds() {
 			beats_per_measure: n,
 			subdivisions_per_beat: s,
 			measures_per_round: m,
-			beat_ratio: ratio,
+			message: Math.round(b) + " beats per minute; " + s + " subdivisions per beat; " + Math.round(b*s) + " subdivisions per minute",
 			sequence: sequence,
 		});
 
-		var c = rand_int(
-			Math.max(b*s/maxb, minc),
-			Math.min(b*s/minb, maxc)
-		);
-		b = b*s/c;
-		ratio = fraction(s, c);
+		var new_s;
+		do {
+			new_s = rand_int(mins, maxs);
+		} while (new_s === s);
+
+		if (i % 2 === 0) {
+			// Adjust b to keep ss = b*s constant.
+			b *= s/new_s;
+		}
+
+		s = new_s;
 	}
 
 	return rounds;
@@ -105,12 +109,7 @@ function display_rounds(rounds) {
 	for (var i = 0; i < rounds.length; i++) {
 		var p = fragment.appendChild(document.createElement('p'));
 
-		if (rounds[i].beat_ratio) {
-			p.appendChild(document.createTextNode("new beat = " + rounds[i].beat_ratio + " old beat = " + rounds[i].beats_per_minute.toFixed(0) + " bpm\n"));
-		} else {
-			p.appendChild(document.createTextNode("beat = " + rounds[i].beats_per_minute.toFixed(0) + " bpm\n"));
-		}
-
+		p.appendChild(document.createTextNode(rounds[i].message + "\n"));
 		p.appendChild(document.createTextNode(" "));
 
 		for (var j = 0; j < rounds[i].beats_per_measure * rounds[i].measures_per_round; j++) {
