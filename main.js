@@ -131,7 +131,7 @@ function display_rounds(rounds) {
 				last_span = span;
 				span.innerText = rounds[i].sequence[j];
 
-				var audio = new Audio('click.wav');
+				var audio = new Audio('click.opus');
 				audio.volume = volumes[rounds[i].sequence[j]];
 
 				schedule.push({
