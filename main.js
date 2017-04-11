@@ -1,4 +1,4 @@
-p_version.innerText = "Version: 0.6";
+p_version.innerText = "Version: 0.7";
 
 // Is this well distributed?
 function rand_int(min, max) {
@@ -190,6 +190,7 @@ button_generate.onclick = function() {
 	current_schedule = display_rounds(current_rounds);
 
 	button_play.disabled = false;
+	button_save.disabled = false;
 };
 
 button_play.onclick = function() {
@@ -211,3 +212,44 @@ button_play.onclick = function() {
     }
 };
 
+function regenerate_load_options() {
+    select_load.innerHTML = '';
+
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+
+        var m;
+        if (m = key.match(/^generated:(.*)/)) {
+            var option = document.createElement('option');
+            option.value = m[1];
+            option.innerText = m[1];
+            select_load.appendChild(option);
+        }
+    }
+}
+
+regenerate_load_options();
+
+button_save.onclick = function() {
+    var name = input_save.value;
+
+    if (!name) {
+        alert("Please choose a name to save as.");
+    }
+
+    localStorage['generated:' + name] = JSON.stringify(current_rounds);
+    regenerate_load_options();
+    console.log('saved');
+    regenerate_load_options();
+
+    input_save.value = '';
+};
+
+button_load.onclick = function() {
+    var name = select_load.value;
+	current_rounds = JSON.parse(localStorage['generated:' + name]);
+	current_schedule = display_rounds(current_rounds);
+
+	button_play.disabled = false;
+	button_save.disabled = false;
+};
