@@ -1,4 +1,4 @@
-p_version.innerText = "Version: 0.5";
+p_version.innerText = "Version: 0.6";
 
 // Is this well distributed?
 function rand_int(min, max) {
