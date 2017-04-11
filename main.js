@@ -1,4 +1,4 @@
-p_version.innerText = "Version: 0.4";
+p_version.innerText = "Version: 0.5";
 
 // Is this well distributed?
 function rand_int(min, max) {
@@ -74,17 +74,21 @@ function create_rounds() {
 			sequence: sequence,
 		});
 
-		var new_s;
-		do {
-			new_s = rand_int(mins, maxs);
-		} while (new_s === s);
+		var new_s, new_b;
 
-		if (i % 2 === 0) {
-			// Adjust b to keep ss = b*s constant.
-			b *= s/new_s;
-		}
+        do {
+            do {
+                new_s = rand_int(mins, maxs);
+            } while (new_s === s);
+
+            if (i % 2 === 0) {
+                // Adjust b to keep ss = b*s constant.
+                new_b = b * s/new_s;
+            }
+        } while (new_b < minb || new_b > maxb);
 
 		s = new_s;
+        b = new_b;
 	}
 
 	return rounds;
