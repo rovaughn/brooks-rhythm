@@ -193,7 +193,7 @@ button_generate.onclick = function() {
 };
 
 button_play.onclick = function() {
-    if (button_play.innerText === "Pause") {
+    if (button_play.innerText === "Stop") {
         for (var i = 0; i < current_timeouts.length; i++) {
             clearTimeout(current_timeouts[i]);
         }
@@ -201,7 +201,7 @@ button_play.onclick = function() {
         current_done();
     } else if (button_play.innerText === "Play") {
         button_generate.disabled = true;
-        button_play.innerText = "Pause";
+        button_play.innerText = "Stop";
 
         play_rounds(current_schedule, function() {
             global_span_to_clear && global_span_to_clear.classList.remove('current');
