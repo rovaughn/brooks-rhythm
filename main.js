@@ -100,6 +100,8 @@ function ljust(str, width) {
 
 var volumes = {"|": 1.00, "-": 0.50, ".": 0.10};
 
+var global_span_to_clear = null;
+
 function display_rounds(rounds) {
 	var fragment = document.createDocumentFragment();
 	var time = 0;
@@ -137,6 +139,7 @@ function display_rounds(rounds) {
 					action: function() {
 						audio.play();
 						span_to_clear && span_to_clear.classList.remove('current');
+                        global_span_to_clear = span;
 						span.classList.add('current');
 					},
 				});
@@ -159,14 +162,24 @@ function display_rounds(rounds) {
 	return schedule;
 }
 
+var current_timeouts = [];
+var current_done = null;
+
 function play_rounds(schedule, done) {
 	var start = 16 + +new Date();
 
+    current_timeouts = [];
+    current_done = done;
+
 	for (var i = 0; i < schedule.length; i++) {
-		setTimeout(schedule[i].action, start + schedule[i].time - +new Date());
+		current_timeouts.push(
+            setTimeout(schedule[i].action, start + schedule[i].time - +new Date())
+        );
 	}
 
-	setTimeout(done, start + schedule[schedule.length-1].time - +new Date());
+	current_timeouts.push(
+        setTimeout(done, start + schedule[schedule.length-1].time - +new Date())
+    );
 }
 
 var current_rounds = null;
@@ -180,10 +193,21 @@ button_generate.onclick = function() {
 };
 
 button_play.onclick = function() {
-	button_generate.disabled = button_play.disabled = true;
+    if (button_play.innerText === "Pause") {
+        for (var i = 0; i < current_timeouts.length; i++) {
+            clearTimeout(current_timeouts[i]);
+        }
 
-	play_rounds(current_schedule, function() {
-		button_generate.disabled = button_play.disabled = false;
-	});
+        current_done();
+    } else if (button_play.innerText === "Play") {
+        button_generate.disabled = true;
+        button_play.innerText = "Pause";
+
+        play_rounds(current_schedule, function() {
+            global_span_to_clear && global_span_to_clear.classList.remove('current');
+            button_generate.disabled = false;
+            button_play.innerText = "Play";
+        });
+    }
 };
 
